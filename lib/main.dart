@@ -49,6 +49,63 @@ class _HomeScreenState extends State<HomeScreen> {
     DuaZikirPage(),
   ];
 
+  static const _navColors = [
+    AppTheme.prayerGradientStart,
+    AppTheme.qiblaGradientStart,
+    AppTheme.quranGradientStart,
+    AppTheme.duaGradientStart,
+  ];
+
+  Widget _buildNavItem(int index, IconData icon, String label) {
+    final isSelected = _currentIndex == index;
+    final color = _navColors[index];
+
+    return RepaintBoundary(
+      child: GestureDetector(
+        onTap: () {
+          if (_currentIndex != index) {
+            setState(() => _currentIndex = index);
+          }
+        },
+        behavior: HitTestBehavior.opaque,
+        child: Container(
+          constraints: const BoxConstraints(minWidth: 60, minHeight: 48),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+          decoration: BoxDecoration(
+            color: isSelected 
+                ? color.withValues(alpha: 0.12)
+                : Colors.transparent,
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                icon,
+                color: isSelected ? color : Colors.grey.shade600,
+                size: 24,
+              ),
+              if (isSelected) ...[
+                const SizedBox(width: 8),
+                Text(
+                  label,
+                  style: TextStyle(
+                    color: color,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -56,45 +113,28 @@ class _HomeScreenState extends State<HomeScreen> {
       body: IndexedStack(index: _currentIndex, children: _pages),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+          color: Colors.white,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
-              blurRadius: 20,
-              offset: Offset(0, -5),
+              color: Colors.black.withValues(alpha: 0.08),
+              blurRadius: 30,
+              offset: const Offset(0, -10),
             ),
           ],
         ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-          child: BottomNavigationBar(
-            currentIndex: _currentIndex,
-            onTap: (i) => setState(() => _currentIndex = i),
-            type: BottomNavigationBarType.fixed,
-            selectedItemColor: AppTheme.primaryGreen,
-            unselectedItemColor: Colors.grey,
-            selectedFontSize: 12,
-            unselectedFontSize: 11,
-            elevation: 0,
-            backgroundColor: Colors.white,
-            items: const [
-              BottomNavigationBarItem(
-                icon: Icon(Icons.schedule),
-                label: 'Vakitler',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.explore),
-                label: 'Kıble',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.book),
-                label: 'Kur\'an',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.auto_awesome),
-                label: 'Dua & Zikir',
-              ),
-            ],
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                _buildNavItem(0, Icons.access_time_rounded, 'Vakitler'),
+                _buildNavItem(1, Icons.explore_outlined, 'Kıble'),
+                _buildNavItem(2, Icons.menu_book_rounded, 'Kur\'an'),
+                _buildNavItem(3, Icons.auto_awesome_outlined, 'Dua'),
+              ],
+            ),
           ),
         ),
       ),

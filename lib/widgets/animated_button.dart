@@ -79,7 +79,7 @@ class _AnimatedButtonState extends State<AnimatedButton> with TickerProviderStat
     // Ripple animation controller
     _rippleController = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 600),
+      duration: const Duration(milliseconds: 600),
     );
 
     _rippleAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
@@ -89,7 +89,7 @@ class _AnimatedButtonState extends State<AnimatedButton> with TickerProviderStat
     // Glow pulse animation controller
     _glowController = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 1500),
+      duration: const Duration(milliseconds: 1500),
     );
 
     _glowAnimation = Tween<double>(begin: 1.0, end: 1.15).animate(
@@ -103,7 +103,7 @@ class _AnimatedButtonState extends State<AnimatedButton> with TickerProviderStat
     // Icon animation controller
     _iconController = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 400),
+      duration: const Duration(milliseconds: 400),
     );
 
     _iconRotation = Tween<double>(begin: 0.0, end: 1.0).animate(
@@ -262,9 +262,9 @@ class _AnimatedButtonState extends State<AnimatedButton> with TickerProviderStat
             curve: _isPressed ? Curves.easeIn : Curves.elasticOut,
             child: AnimatedOpacity(
               opacity: widget.enabled ? 1.0 : 0.5,
-              duration: Duration(milliseconds: 200),
+              duration: const Duration(milliseconds: 200),
               child: FadeInUp(
-                duration: Duration(milliseconds: 600),
+                duration: const Duration(milliseconds: 600),
                 child: AnimatedBuilder(
                   animation: Listenable.merge([_glowAnimation, _rippleAnimation]),
                   builder: (context, child) {
@@ -273,35 +273,35 @@ class _AnimatedButtonState extends State<AnimatedButton> with TickerProviderStat
                         begin: 12.0,
                         end: _isPressed ? 20.0 : 12.0,
                       ),
-                      duration: Duration(milliseconds: 200),
+                      duration: const Duration(milliseconds: 200),
                       builder: (context, blurRadius, _) {
                         return TweenAnimationBuilder<Offset>(
                           tween: Tween(
-                            begin: Offset(0, 6),
-                            end: _isPressed ? Offset(0, 10) : Offset(0, 6),
+                            begin: const Offset(0, 6),
+                            end: _isPressed ? const Offset(0, 10) : const Offset(0, 6),
                           ),
-                          duration: Duration(milliseconds: 200),
+                          duration: const Duration(milliseconds: 200),
                           builder: (context, shadowOffset, _) {
                             return Container(
-                              constraints: BoxConstraints(minWidth: 48, minHeight: 48),
-                              padding: EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                              constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
+                              padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
                               decoration: BoxDecoration(
                                 gradient: effectiveGradient,
                                 borderRadius: BorderRadius.circular(16),
                                 boxShadow: [
                                   // Primary shadow
                                   BoxShadow(
-                                    color: primaryColor.withOpacity(0.3),
+                                    color: primaryColor.withValues(alpha: 0.3),
                                     blurRadius: blurRadius,
                                     offset: shadowOffset,
                                   ),
                                   // Glow shadow
                                   if (widget.enableGlow)
                                     BoxShadow(
-                                      color: glowColor.withOpacity(0.5 * _glowAnimation.value),
+                                      color: glowColor.withValues(alpha: 0.5 * _glowAnimation.value),
                                       blurRadius: 24 * _glowAnimation.value,
                                       spreadRadius: 2,
-                                      offset: Offset(0, 0),
+                                      offset: const Offset(0, 0),
                                     ),
                                 ],
                               ),
@@ -328,7 +328,7 @@ class _AnimatedButtonState extends State<AnimatedButton> with TickerProviderStat
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       if (widget.isLoading)
-                                        SizedBox(
+                                        const SizedBox(
                                           width: 20,
                                           height: 20,
                                           child: CircularProgressIndicator(
@@ -340,7 +340,7 @@ class _AnimatedButtonState extends State<AnimatedButton> with TickerProviderStat
                                         )
                                       else if (widget.icon != null) ...[
                                         _buildAnimatedIcon(),
-                                        SizedBox(width: 8),
+                                        const SizedBox(width: 8),
                                       ],
                                       if (!widget.isLoading)
                                         Text(
@@ -418,7 +418,6 @@ class _AnimatedButtonState extends State<AnimatedButton> with TickerProviderStat
         );
 
       case IconAnimationType.none:
-      default:
         return iconWidget;
     }
   }
@@ -439,7 +438,7 @@ class RipplePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = rippleColor.withOpacity((1.0 - progress) * 0.5)
+      ..color = rippleColor.withValues(alpha: (1.0 - progress) * 0.5)
       ..style = PaintingStyle.fill;
 
     final maxRadius = size.width > size.height ? size.width : size.height;

@@ -62,7 +62,6 @@ class GradientBackground extends StatefulWidget {
 class _GradientBackgroundState extends State<GradientBackground> {
   List<Color> _currentColors = [];
   int _currentGradientIndex = 0;
-  bool _isAnimating = false;
   Timer? _cycleTimer;
 
   @override
@@ -137,7 +136,7 @@ class _GradientBackgroundState extends State<GradientBackground> {
   }
 
   void _startCycling() {
-    _cycleTimer = Timer.periodic(Duration(milliseconds: 4000), (timer) {
+    _cycleTimer = Timer.periodic(const Duration(milliseconds: 4000), (timer) {
       if (widget.gradientList != null && widget.gradientList!.isNotEmpty) {
         setState(() {
           _currentGradientIndex = (_currentGradientIndex + 1) % widget.gradientList!.length;
@@ -150,19 +149,6 @@ class _GradientBackgroundState extends State<GradientBackground> {
   void _stopCycling() {
     _cycleTimer?.cancel();
     _cycleTimer = null;
-  }
-
-  List<Color> _interpolateColorList(List<Color> start, List<Color> end, double t) {
-    final length = start.length > end.length ? start.length : end.length;
-    final result = <Color>[];
-
-    for (int i = 0; i < length; i++) {
-      final startColor = start[i % start.length];
-      final endColor = end[i % end.length];
-      result.add(Color.lerp(startColor, endColor, t) ?? startColor);
-    }
-
-    return result;
   }
 
   Gradient _buildGradient(List<Color> colors) {

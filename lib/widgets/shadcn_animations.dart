@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'dart:math' as Math;
+import 'dart:math' as math;
 
 class ShadcnAnimatedLogo extends StatefulWidget {
   final double size;
@@ -77,15 +76,15 @@ class _ShadcnAnimatedLogoState extends State<ShadcnAnimatedLogo>
                   shape: BoxShape.circle,
                   gradient: RadialGradient(
                     colors: [
-                      widget.color.withOpacity(0.8),
-                      widget.color.withOpacity(0.4),
-                      widget.color.withOpacity(0.1),
+                      widget.color.withValues(alpha: 0.8),
+                      widget.color.withValues(alpha: 0.4),
+                      widget.color.withValues(alpha: 0.1),
                     ],
                     stops: const [0.3, 0.6, 1.0],
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: widget.color.withOpacity(0.3),
+                      color: widget.color.withValues(alpha: 0.3),
                       blurRadius: 20,
                       spreadRadius: 5,
                       offset: const Offset(0, 10),
@@ -128,8 +127,8 @@ class ShadcnLogoPainter extends CustomPainter {
     // Outer hexagon
     for (int i = 0; i < 6; i++) {
       final angle = (i * 60) * 3.14159 / 180;
-      final x = center.dx + radius * 0.8 * Math.cos(angle);
-      final y = center.dy + radius * 0.8 * Math.sin(angle);
+      final x = center.dx + radius * 0.8 * math.cos(angle);
+      final y = center.dy + radius * 0.8 * math.sin(angle);
       
       if (i == 0) {
         path.moveTo(x, y);
@@ -142,13 +141,13 @@ class ShadcnLogoPainter extends CustomPainter {
     canvas.drawPath(path, paint);
     
     // Inner geometric pattern
-    paint.color = color.withOpacity(0.7);
+    paint.color = color.withValues(alpha: 0.7);
     final innerPath = Path();
     
     for (int i = 0; i < 3; i++) {
       final angle = (i * 120 + 30) * 3.14159 / 180;
-      final x = center.dx + radius * 0.4 * Math.cos(angle);
-      final y = center.dy + radius * 0.4 * Math.sin(angle);
+      final x = center.dx + radius * 0.4 * math.cos(angle);
+      final y = center.dy + radius * 0.4 * math.sin(angle);
       
       if (i == 0) {
         innerPath.moveTo(x, y);
@@ -241,7 +240,7 @@ class MooshenWavePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = color.withOpacity(0.6)
+      ..color = color.withValues(alpha: 0.6)
       ..style = PaintingStyle.fill
       ..strokeWidth = 2.0;
 
@@ -252,8 +251,8 @@ class MooshenWavePainter extends CustomPainter {
     
     for (double x = 0; x <= size.width; x++) {
       final y = size.height / 2 + 
-          20 * Math.sin((x / size.width * 4 * 3.14159) + animationValue) +
-          10 * Math.sin((x / size.width * 8 * 3.14159) + animationValue * 1.5);
+          20 * math.sin((x / size.width * 4 * 3.14159) + animationValue) +
+          10 * math.sin((x / size.width * 8 * 3.14159) + animationValue * 1.5);
       path.lineTo(x, y);
     }
     
@@ -264,14 +263,14 @@ class MooshenWavePainter extends CustomPainter {
     canvas.drawPath(path, paint);
     
     // Second wave layer
-    paint.color = color.withOpacity(0.4);
+    paint.color = color.withValues(alpha: 0.4);
     final path2 = Path();
     
     path2.moveTo(0, size.height / 2 + 20);
     
     for (double x = 0; x <= size.width; x++) {
       final y = size.height / 2 + 20 + 
-          15 * Math.sin((x / size.width * 3 * 3.14159) + animationValue * 0.8);
+          15 * math.sin((x / size.width * 3 * 3.14159) + animationValue * 0.8);
       path2.lineTo(x, y);
     }
     

@@ -49,8 +49,8 @@ class _GlassCardState extends State<GlassCard> with SingleTickerProviderStateMix
     // Initialize animation controller for border glow
     _glowController = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 2000),
-    );
+      duration: const Duration(milliseconds: 2000),
+    )..value = 0.5; // Set default value
 
     // Create tween animation for pulsing border glow (0.2 to 0.8 opacity)
     _glowAnimation = Tween<double>(begin: 0.2, end: 0.8).animate(
@@ -60,7 +60,7 @@ class _GlassCardState extends State<GlassCard> with SingleTickerProviderStateMix
       ),
     );
 
-    // Start repeating animation if border glow is enabled
+    // Start repeating animation ONLY if border glow is explicitly enabled
     if (widget.borderGlowColor != null) {
       _glowController.repeat(reverse: true);
     }
@@ -91,8 +91,7 @@ class _GlassCardState extends State<GlassCard> with SingleTickerProviderStateMix
 
     // Use theme decoration if enabled
     if (widget.useThemeDecoration) {
-      return AnimatedContainer(
-        duration: Duration(milliseconds: 300),
+      return Container(
         margin: widget.margin,
         decoration: AppTheme.getGlassDecoration(isDark: isDarkMode),
         child: ClipRRect(
@@ -102,29 +101,45 @@ class _GlassCardState extends State<GlassCard> with SingleTickerProviderStateMix
       );
     }
 
-    // Custom decoration with animated border glow
-    return AnimatedBuilder(
-      animation: _glowAnimation,
-      builder: (context, child) {
-        return AnimatedContainer(
-          duration: Duration(milliseconds: 300),
-          margin: widget.margin,
-          decoration: BoxDecoration(
-            borderRadius: effectiveBorderRadius,
-            border: Border.all(
-              color: widget.borderGlowColor != null
-                ? widget.borderGlowColor!.withOpacity(_glowAnimation.value)
-                : AppTheme.glassBorder,
-              width: 1.5,
+    // Custom decoration with animated border glow ONLY when borderGlowColor is set
+    if (widget.borderGlowColor != null) {
+      return AnimatedBuilder(
+        animation: _glowAnimation,
+        builder: (context, child) {
+          return Container(
+            margin: widget.margin,
+            decoration: BoxDecoration(
+              borderRadius: effectiveBorderRadius,
+              border: Border.all(
+                color: widget.borderGlowColor!.withValues(alpha: _glowAnimation.value),
+                width: 1.5,
+              ),
+              boxShadow: widget.enableShadows ? _buildShadows(isDarkMode) : null,
             ),
-            boxShadow: widget.enableShadows ? _buildShadows(isDarkMode) : null,
-          ),
-          child: ClipRRect(
-            borderRadius: effectiveBorderRadius,
-            child: _buildBlurContent(isDarkMode, effectiveBorderRadius),
-          ),
-        );
-      },
+            child: ClipRRect(
+              borderRadius: effectiveBorderRadius,
+              child: _buildBlurContent(isDarkMode, effectiveBorderRadius),
+            ),
+          );
+        },
+      );
+    }
+
+    // Static decoration (no animation)
+    return Container(
+      margin: widget.margin,
+      decoration: BoxDecoration(
+        borderRadius: effectiveBorderRadius,
+        border: Border.all(
+          color: AppTheme.glassBorder,
+          width: 1.5,
+        ),
+        boxShadow: widget.enableShadows ? _buildShadows(isDarkMode) : null,
+      ),
+      child: ClipRRect(
+        borderRadius: effectiveBorderRadius,
+        child: _buildBlurContent(isDarkMode, effectiveBorderRadius),
+      ),
     );
   }
 
@@ -132,7 +147,7 @@ class _GlassCardState extends State<GlassCard> with SingleTickerProviderStateMix
     final blurWidget = widget.animateBlur
       ? TweenAnimationBuilder<double>(
           tween: Tween(begin: 0.0, end: widget.blur.clamp(0.0, widget.maxBlur)),
-          duration: Duration(milliseconds: 600),
+          duration: const Duration(milliseconds: 600),
           curve: Curves.easeOutCubic,
           builder: (context, blurValue, child) {
             return BackdropFilter(
@@ -159,18 +174,18 @@ class _GlassCardState extends State<GlassCard> with SingleTickerProviderStateMix
         gradient: widget.gradient ?? LinearGradient(
           colors: isDarkMode
             ? [
-                AppTheme.glassDark.withOpacity(widget.opacity),
-                AppTheme.glassDark.withOpacity(widget.opacity * 0.5),
+                AppTheme.glassDark.withValues(alpha: widget.opacity),
+                AppTheme.glassDark.withValues(alpha: widget.opacity * 0.5),
               ]
             : [
-                AppTheme.glassWhite.withOpacity(widget.opacity * 5), // Multiply by 5 since glassWhite is already at 0.1 opacity
-                AppTheme.glassWhite.withOpacity(widget.opacity * 2.5),
+                AppTheme.glassWhite.withValues(alpha: widget.opacity * 5), // Multiply by 5 since glassWhite is already at 0.1 opacity
+                AppTheme.glassWhite.withValues(alpha: widget.opacity * 2.5),
               ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
       ),
-      padding: widget.padding ?? EdgeInsets.all(20),
+      padding: widget.padding ?? const EdgeInsets.all(20),
       child: widget.child,
     );
   }
@@ -182,10 +197,10 @@ class _GlassCardState extends State<GlassCard> with SingleTickerProviderStateMix
     if (widget.borderGlowColor != null) {
       shadows.add(
         BoxShadow(
-          color: widget.borderGlowColor!.withOpacity(_glowAnimation.value * 0.5),
+          color: widget.borderGlowColor!.withValues(alpha: _glowAnimation.value * 0.5),
           blurRadius: 20,
           spreadRadius: _glowAnimation.value * 2,
-          offset: Offset(0, 0),
+          offset: const Offset(0, 0),
         ),
       );
     } else {
@@ -193,14 +208,14 @@ class _GlassCardState extends State<GlassCard> with SingleTickerProviderStateMix
         BoxShadow(
           color: isDarkMode ? AppTheme.glowBlue : AppTheme.glowPurple,
           blurRadius: 20,
-          offset: Offset(0, 4),
+          offset: const Offset(0, 4),
         ),
       );
     }
 
     // Inner highlight shadow
     shadows.add(
-      BoxShadow(
+      const BoxShadow(
         color: AppTheme.glassHighlight,
         blurRadius: 10,
         offset: Offset(0, -2),

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'dart:math' as Math;
+import 'dart:math' as math;
 
 class ModernParticleAnimation extends StatefulWidget {
   final double width;
@@ -34,12 +34,12 @@ class _ModernParticleAnimationState extends State<ModernParticleAnimation>
 
     _particles = List.generate(widget.particleCount, (index) {
       return Particle(
-        x: Math.Random().nextDouble() * widget.width,
-        y: Math.Random().nextDouble() * widget.height,
-        vx: (Math.Random().nextDouble() - 0.5) * 2,
-        vy: (Math.Random().nextDouble() - 0.5) * 2,
-        size: Math.Random().nextDouble() * 4 + 1,
-        opacity: Math.Random().nextDouble() * 0.5 + 0.5,
+        x: math.Random().nextDouble() * widget.width,
+        y: math.Random().nextDouble() * widget.height,
+        vx: (math.Random().nextDouble() - 0.5) * 2,
+        vy: (math.Random().nextDouble() - 0.5) * 2,
+        size: math.Random().nextDouble() * 4 + 1,
+        opacity: math.Random().nextDouble() * 0.5 + 0.5,
       );
     });
   }
@@ -107,7 +107,7 @@ class ParticlePainter extends CustomPainter {
     for (final particle in particles) {
       particle.update(size.width, size.height);
       
-      paint.color = color.withOpacity(particle.opacity * (0.5 + 0.5 * Math.sin(animationValue * 2 * Math.pi)));
+      paint.color = color.withValues(alpha: particle.opacity * (0.5 + 0.5 * math.sin(animationValue * 2 * math.pi)));
       
       canvas.drawCircle(
         Offset(particle.x, particle.y),
@@ -176,15 +176,15 @@ class _NeonGlowAnimationState extends State<NeonGlowAnimation>
             shape: BoxShape.circle,
             gradient: RadialGradient(
               colors: [
-                widget.color.withOpacity(_glowAnimation.value),
-                widget.color.withOpacity(_glowAnimation.value * 0.5),
+                widget.color.withValues(alpha: _glowAnimation.value),
+                widget.color.withValues(alpha: _glowAnimation.value * 0.5),
                 Colors.transparent,
               ],
               stops: const [0.3, 0.6, 1.0],
             ),
             boxShadow: [
               BoxShadow(
-                color: widget.color.withOpacity(_glowAnimation.value * 0.8),
+                color: widget.color.withValues(alpha: _glowAnimation.value * 0.8),
                 blurRadius: 30 * _glowAnimation.value,
                 spreadRadius: 10 * _glowAnimation.value,
               ),
@@ -273,7 +273,7 @@ class MorphingShapePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = color.withOpacity(0.7)
+      ..color = color.withValues(alpha: 0.7)
       ..style = PaintingStyle.fill;
 
     final center = Offset(size.width / 2, size.height / 2);
@@ -292,9 +292,9 @@ class MorphingShapePainter extends CustomPainter {
       final hexRadius = radius * (0.7 + morphProgress * 0.3);
       
       for (int i = 0; i < 6; i++) {
-        final angle = (i * 60) * Math.pi / 180;
-        final x = center.dx + hexRadius * Math.cos(angle);
-        final y = center.dy + hexRadius * Math.sin(angle);
+        final angle = (i * 60) * math.pi / 180;
+        final x = center.dx + hexRadius * math.cos(angle);
+        final y = center.dy + hexRadius * math.sin(angle);
         
         if (i == 0) {
           path.moveTo(x, y);
@@ -308,8 +308,8 @@ class MorphingShapePainter extends CustomPainter {
     canvas.drawPath(path, paint);
 
     // Inner animated element
-    paint.color = color.withOpacity(0.9);
-    final innerSize = radius * 0.4 * (0.5 + 0.5 * Math.sin(animationValue * 2 * Math.pi));
+    paint.color = color.withValues(alpha: 0.9);
+    final innerSize = radius * 0.4 * (0.5 + 0.5 * math.sin(animationValue * 2 * math.pi));
     
     if (animationValue < 0.5) {
       canvas.drawCircle(center, innerSize, paint);
@@ -318,9 +318,9 @@ class MorphingShapePainter extends CustomPainter {
       final triangleSize = innerSize * 1.5;
       
       for (int i = 0; i < 3; i++) {
-        final angle = (i * 120 - 90) * Math.pi / 180;
-        final x = center.dx + triangleSize * Math.cos(angle);
-        final y = center.dy + triangleSize * Math.sin(angle);
+        final angle = (i * 120 - 90) * math.pi / 180;
+        final x = center.dx + triangleSize * math.cos(angle);
+        final y = center.dy + triangleSize * math.sin(angle);
         
         if (i == 0) {
           trianglePath.moveTo(x, y);

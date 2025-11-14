@@ -4,31 +4,57 @@ import 'package:google_fonts/google_fonts.dart';
 
 class AppTheme {
   // ============================================================================
-  // LEGACY COLOR PALETTE (Preserved for backward compatibility)
+  // MODERN ISLAMIC APP COLOR PALETTE
   // ============================================================================
-  static const primaryGreen = Color(0xFF2D8B6E);
-  static const secondaryGold = Color(0xFFD4AF37);
-  static const darkBackground = Color(0xFF1A1F2E);
-  static const cardBackground = Color(0xFF242938);
-  static const accentTeal = Color(0xFF4ECDC4);
-  static const softWhite = Color(0xFFF7F7F7);
+  static const primaryGreen = Color(0xFF0D9488); // Modern teal
+  static const secondaryGold = Color(0xFFF59E0B); // Warm amber
+  static const darkBackground = Color(0xFF0F172A); // Deep navy
+  static const cardBackground = Color(0xFF1E293B); // Slate
+  static const accentTeal = Color(0xFF06B6D4); // Bright cyan
+  static const softWhite = Color(0xFFFAFAFA); // Clean white
 
-  // Legacy Gradient Colors
-  static const gradientStart = Color(0xFF2D8B6E);
-  static const gradientMiddle = Color(0xFF3FA78F);
-  static const gradientEnd = Color(0xFF4ECDC4);
+  // Modern Gradient Colors - Islamic inspired
+  static const gradientStart = Color(0xFF0D9488); // Teal
+  static const gradientMiddle = Color(0xFF14B8A6); // Light teal
+  static const gradientEnd = Color(0xFF2DD4BF); // Cyan
 
-  static const prayerGradientStart = Color(0xFF667EEA);
-  static const prayerGradientEnd = Color(0xFF764BA2);
+  // Prayer times - Peaceful purple gradient
+  static const prayerGradientStart = Color(0xFF6366F1); // Indigo
+  static const prayerGradientEnd = Color(0xFF8B5CF6); // Purple
 
-  static const qiblaGradientStart = Color(0xFFD4AF37);
-  static const qiblaGradientEnd = Color(0xFFF5A623);
+  // ============================================================================
+  // PRAYER TIME SPECIFIC COLORS (Her vakit için özgü renkler)
+  // ============================================================================
+  
+  // Fajr (Sabah) - Soft blue/morning sky
+  static const fajrColor = Color(0xFF6366F1); // Indigo - Morning calm
+  
+  // Sunrise (Güneş Doğuşu) - Golden orange/sunrise
+  static const sunriseColor = Color(0xFFF59E0B); // Amber - Sunrise warmth
+  
+  // Dhuhr (Öğlen) - Bright blue/daylight
+  static const dhuhrColor = Color(0xFF3B82F6); // Sky blue - Bright daylight
+  
+  // Asr (İkindi) - Calm teal/green
+  static const asrColor = Color(0xFF0D9488); // Teal - Peaceful afternoon
+  
+  // Maghrib (Akşam) - Sunset orange/red
+  static const maghribColor = Color(0xFFEF4444); // Red - Sunset glow
+  
+  // Isha (Yatsı) - Deep purple/night
+  static const ishaColor = Color(0xFF7C3AED); // Purple - Night calm
 
-  static const quranGradientStart = Color(0xFF2D8B6E);
-  static const quranGradientEnd = Color(0xFF1A5F4C);
+  // Qibla - Gold/Amber warm gradient
+  static const qiblaGradientStart = Color(0xFFF59E0B); // Amber
+  static const qiblaGradientEnd = Color(0xFFEF4444); // Orange-red
 
-  static const duaGradientStart = Color(0xFF6366F1);
-  static const duaGradientEnd = Color(0xFF8B5CF6);
+  // Quran - Emerald green gradient
+  static const quranGradientStart = Color(0xFF059669); // Emerald
+  static const quranGradientEnd = Color(0xFF0D9488); // Teal
+
+  // Dua & Zikir - Rose/Pink gradient
+  static const duaGradientStart = Color(0xFFEC4899); // Pink
+  static const duaGradientEnd = Color(0xFF8B5CF6); // Purple
 
   // ============================================================================
   // PREMIUM COLOR PALETTE (Ocean Blue + Sunset Purple Fusion)
@@ -251,11 +277,11 @@ class AppTheme {
 
   /// Pulse color - Breathing animation effect
   /// Use for: Attention-grabbing elements, live indicators
-  static final pulseColor = skyBlue.withOpacity(0.3);
+  static final pulseColor = skyBlue.withValues(alpha: 0.3);
 
   /// Ripple color - Touch feedback effect
   /// Use for: Button press feedback, interactive touch responses
-  static final rippleColor = neonCyan.withOpacity(0.2);
+  static final rippleColor = neonCyan.withValues(alpha: 0.2);
 
   // ----------------------------------------------------------------------------
   // Glow Effect Colors - Luminous accents for modern UI
@@ -264,49 +290,49 @@ class AppTheme {
 
   /// Blue glow - Cool luminous effect
   /// Use for: Focus states, hover effects on primary elements
-  static final glowBlue = skyBlue.withOpacity(0.5);
+  static final glowBlue = skyBlue.withValues(alpha: 0.5);
 
   /// Purple glow - Mystical luminous effect
   /// Use for: Premium features, special content highlights
-  static final glowPurple = twilightPurple.withOpacity(0.5);
+  static final glowPurple = twilightPurple.withValues(alpha: 0.5);
 
   /// Pink glow - Warm luminous effect
   /// Use for: Favorites, bookmarks, personalized content
-  static final glowPink = sunsetPink.withOpacity(0.5);
+  static final glowPink = sunsetPink.withValues(alpha: 0.5);
 
   /// Cyan glow - Electric luminous effect
   /// Use for: Active states, real-time updates, live features
-  static final glowCyan = neonCyan.withOpacity(0.5);
+  static final glowCyan = neonCyan.withValues(alpha: 0.5);
 
   // ============================================================================
   // LEGACY LINEAR GRADIENTS (Preserved for backward compatibility)
   // ============================================================================
 
-  static LinearGradient get mainGradient => LinearGradient(
+  static LinearGradient get mainGradient => const LinearGradient(
     colors: [gradientStart, gradientMiddle, gradientEnd],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
 
-  static LinearGradient get prayerGradient => LinearGradient(
+  static LinearGradient get prayerGradient => const LinearGradient(
     colors: [prayerGradientStart, prayerGradientEnd],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
 
-  static LinearGradient get qiblaGradient => LinearGradient(
+  static LinearGradient get qiblaGradient => const LinearGradient(
     colors: [qiblaGradientStart, qiblaGradientEnd],
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,
   );
 
-  static LinearGradient get quranGradient => LinearGradient(
+  static LinearGradient get quranGradient => const LinearGradient(
     colors: [quranGradientStart, quranGradientEnd],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
 
-  static LinearGradient get duaGradient => LinearGradient(
+  static LinearGradient get duaGradient => const LinearGradient(
     colors: [duaGradientStart, duaGradientEnd],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
@@ -319,7 +345,7 @@ class AppTheme {
   /// Ocean Dream Gradient - Serene blue ocean vibes
   /// Use for: Main screen backgrounds, hero sections, splash screens
   /// Color flow: Deep ocean → Sky → Neon cyan (cool to electric)
-  static LinearGradient get oceanDreamGradient => LinearGradient(
+  static LinearGradient get oceanDreamGradient => const LinearGradient(
     colors: [oceanBlue, skyBlue, neonCyan],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
@@ -328,7 +354,7 @@ class AppTheme {
   /// Sunset Magic Gradient - Warm twilight atmosphere
   /// Use for: Prayer time cards, special notifications, evening themes
   /// Color flow: Purple twilight → Pink sunset → Amber glow (mystical to warm)
-  static LinearGradient get sunsetMagicGradient => LinearGradient(
+  static LinearGradient get sunsetMagicGradient => const LinearGradient(
     colors: [twilightPurple, sunsetPink, amberGlow],
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,
@@ -337,7 +363,7 @@ class AppTheme {
   /// Cosmic Fusion Gradient - Deep space exploration
   /// Use for: Quran pages, important content areas, premium sections
   /// Color flow: Indigo → Electric violet → Twilight purple (cosmic journey)
-  static LinearGradient get cosmicFusionGradient => LinearGradient(
+  static LinearGradient get cosmicFusionGradient => const LinearGradient(
     colors: [cosmicIndigo, electricViolet, twilightPurple],
     begin: Alignment.topRight,
     end: Alignment.bottomLeft,
@@ -347,7 +373,7 @@ class AppTheme {
   /// Use for: Premium features, splash screens, special announcements
   /// Color flow: Ocean blue → Electric violet → Sunset pink → Neon cyan (full spectrum)
   /// Note: Uses 4 colors with custom stops for smooth transitions
-  static LinearGradient get auroraBorealisGradient => LinearGradient(
+  static LinearGradient get auroraBorealisGradient => const LinearGradient(
     colors: [oceanBlue, electricViolet, sunsetPink, neonCyan],
     begin: Alignment(-1.0, -1.0),
     end: Alignment(1.0, 1.0),
@@ -357,7 +383,7 @@ class AppTheme {
   /// Twilight Glow Gradient - Night mode elegance
   /// Use for: Dark mode backgrounds, nighttime content, immersive experiences
   /// Color flow: Deep space → Cosmic indigo → Twilight purple (deep to mystical)
-  static LinearGradient get twilightGlowGradient => LinearGradient(
+  static LinearGradient get twilightGlowGradient => const LinearGradient(
     colors: [deepSpace, cosmicIndigo, twilightPurple],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
@@ -366,7 +392,7 @@ class AppTheme {
   /// Rose Quartz Gradient - Elegant feminine aesthetic
   /// Use for: Dua & Zikir pages, female-focused content, soft interactions
   /// Color flow: Rose gold → Sunset pink → Electric violet (soft to vibrant)
-  static LinearGradient get roseQuartzGradient => LinearGradient(
+  static LinearGradient get roseQuartzGradient => const LinearGradient(
     colors: [roseGold, sunsetPink, electricViolet],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
@@ -375,7 +401,7 @@ class AppTheme {
   /// Electric Sky Gradient - Energetic daylight
   /// Use for: Qibla compass page, navigation elements, active states
   /// Color flow: Sky blue → Neon cyan → Electric violet (bright to energetic)
-  static LinearGradient get electricSkyGradient => LinearGradient(
+  static LinearGradient get electricSkyGradient => const LinearGradient(
     colors: [skyBlue, neonCyan, electricViolet],
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,
@@ -384,7 +410,7 @@ class AppTheme {
   /// Midnight Shimmer Gradient - Subtle dark elegance
   /// Use for: Cards, buttons, hover effects, interactive elements
   /// Color flow: Midnight blue → Ocean blue → Cosmic indigo (horizontal flow)
-  static LinearGradient get midnightShimmerGradient => LinearGradient(
+  static LinearGradient get midnightShimmerGradient => const LinearGradient(
     colors: [midnightBlue, oceanBlue, cosmicIndigo],
     begin: Alignment.centerLeft,
     end: Alignment.centerRight,
@@ -420,7 +446,7 @@ class AppTheme {
   /// Use for: Loading indicators, progress rings, circular progress bars
   /// Effect: Complete color wheel rotation (360°)
   /// Note: Perfect for animated circular progress indicators
-  static SweepGradient get rainbowSweepGradient => SweepGradient(
+  static SweepGradient get rainbowSweepGradient => const SweepGradient(
     colors: [
       oceanBlue,
       skyBlue,
@@ -471,10 +497,10 @@ class AppTheme {
         BoxShadow(
           color: isDark ? glowBlue : glowPurple,
           blurRadius: 20,
-          offset: Offset(0, 4),
+          offset: const Offset(0, 4),
         ),
         // Inner highlight
-        BoxShadow(
+        const BoxShadow(
           color: glassHighlight,
           blurRadius: 10,
           offset: Offset(0, -2),
@@ -516,18 +542,17 @@ class AppTheme {
       borderRadius: BorderRadius.circular(20),
       boxShadow: isPressed
           ? [
-              // Inner shadows (pressed state)
+              // Inner shadows (pressed state) - Flutter doesn't support inset shadows directly
+              // Using negative offsets and reduced blur to simulate inset effect
               BoxShadow(
                 color: isDark ? neuDarkShadow : neuLightShadow,
-                blurRadius: 10,
-                offset: Offset(-5, -5),
-                inset: true,
+                blurRadius: 5,
+                offset: const Offset(-3, -3),
               ),
               BoxShadow(
-                color: isDark ? Colors.black.withOpacity(0.3) : neuDarkShadow,
-                blurRadius: 10,
-                offset: Offset(5, 5),
-                inset: true,
+                color: isDark ? Colors.black.withValues(alpha: 0.3) : neuDarkShadow,
+                blurRadius: 5,
+                offset: const Offset(3, 3),
               ),
             ]
           : [
@@ -535,12 +560,12 @@ class AppTheme {
               BoxShadow(
                 color: isDark ? neuDarkHighlight : neuLightHighlight,
                 blurRadius: 15,
-                offset: Offset(-8, -8),
+                offset: const Offset(-8, -8),
               ),
               BoxShadow(
-                color: isDark ? Colors.black.withOpacity(0.5) : neuDarkShadow,
+                color: isDark ? Colors.black.withValues(alpha: 0.5) : neuDarkShadow,
                 blurRadius: 15,
-                offset: Offset(8, 8),
+                offset: const Offset(8, 8),
               ),
             ],
     );
@@ -554,17 +579,15 @@ class AppTheme {
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.light,
-      colorScheme: ColorScheme.light(
+      colorScheme: const ColorScheme.light(
         primary: oceanBlue,
         secondary: twilightPurple,
         tertiary: skyBlue,
         surface: pearlGray,
-        background: cloudWhite,
         error: Color(0xFFDC2626),
         onPrimary: Colors.white,
         onSecondary: Colors.white,
         onSurface: Color(0xFF1E293B),
-        onBackground: Color(0xFF0F172A),
       ),
       scaffoldBackgroundColor: cloudWhite,
       textTheme: GoogleFonts.poppinsTextTheme().apply(
@@ -582,10 +605,10 @@ class AppTheme {
           color: Colors.black87,
         ),
       ),
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData(
         elevation: 8,
         color: Colors.white,
-        shadowColor: oceanBlue.withOpacity(0.1),
+        shadowColor: oceanBlue.withValues(alpha: 0.1),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(24),
         ),
@@ -593,7 +616,7 @@ class AppTheme {
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           elevation: 4,
-          padding: EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+          padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
@@ -614,17 +637,15 @@ class AppTheme {
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.dark,
-      colorScheme: ColorScheme.dark(
+      colorScheme: const ColorScheme.dark(
         primary: skyBlue,
         secondary: sunsetPink,
         tertiary: neonCyan,
         surface: midnightBlue,
-        background: deepSpace,
         error: Color(0xFFEF4444),
         onPrimary: Colors.white,
         onSecondary: Colors.white,
         onSurface: Color(0xFFE2E8F0),
-        onBackground: Color(0xFFF1F5F9),
       ),
       scaffoldBackgroundColor: deepSpace,
       textTheme: GoogleFonts.poppinsTextTheme().apply(
@@ -642,10 +663,10 @@ class AppTheme {
           color: Colors.white,
         ),
       ),
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData(
         elevation: 12,
         color: midnightBlue,
-        shadowColor: Colors.black.withOpacity(0.5),
+        shadowColor: Colors.black.withValues(alpha: 0.5),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(24),
         ),
@@ -653,7 +674,7 @@ class AppTheme {
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           elevation: 4,
-          padding: EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+          padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
