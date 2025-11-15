@@ -95,50 +95,55 @@ class _DuaZikirPageState extends State<DuaZikirPage>
     return Scaffold(
       backgroundColor: Colors.grey.shade50,
       body: SafeArea(
-            child: Column(
-              children: [
-                _buildHeader(),
-                _buildSearchBar(),
-                _buildTabs(),
-                Expanded(
-                  child: TabBarView(
-                    controller: _tabController,
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    children: [
-                      _buildDuaList(_filterDuas(_morningDuas)),
-                      _buildDuaList(_filterDuas(_eveningDuas)),
-                      _buildDuaList(_filterDuas(_generalDuas)),
-                    ],
-                  ),
-                ),
-              ],
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _buildHeader(),
+            _buildSearchBar(),
+            _buildTabs(),
+            Expanded(
+              child: _buildCurrentTabContent(),
             ),
+          ],
+        ),
       ),
     );
   }
 
+  Widget _buildCurrentTabContent() {
+    // Tab değiştiğinde içeriği güncellemek için listener kullanılıyor
+    final currentDuas = _filterDuas(_getCurrentTabDuas());
+    return _buildDuaList(currentDuas);
+  }
+
   Widget _buildHeader() {
     return Padding(
-      padding: const EdgeInsets.all(24.0),
-      child: Column(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: Row(
         children: [
           const Icon(
             Icons.auto_awesome,
-            size: 48,
+            size: 32,
             color: AppTheme.primaryGreen,
           ),
-          const SizedBox(height: 12),
-          const Text(
-            'Dua & Zikir',
-            style: _headerTitleStyle,
-          ),
-          if (_searchQuery.isNotEmpty) ...[
-            const SizedBox(height: 8),
-            Text(
-              '${_filterDuas(_getCurrentTabDuas()).length} Dua Bulundu',
-              style: _headerSubtitleStyle,
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text(
+                  'Dua & Zikir',
+                  style: _headerTitleStyle,
+                ),
+                if (_searchQuery.isNotEmpty)
+                  Text(
+                    '${_filterDuas(_getCurrentTabDuas()).length} Dua Bulundu',
+                    style: _headerSubtitleStyle,
+                  ),
+              ],
             ),
-          ],
+          ),
         ],
       ),
     );
@@ -146,7 +151,7 @@ class _DuaZikirPageState extends State<DuaZikirPage>
 
   Widget _buildSearchBar() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
       child: Card(
         elevation: 1,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -187,15 +192,17 @@ class _DuaZikirPageState extends State<DuaZikirPage>
   // Cache static decorations
   static const _tabGradient = LinearGradient(
     colors: [
-      AppTheme.duaGradientStart,
-      AppTheme.duaGradientEnd,
+      AppTheme.primaryGreen,
+      AppTheme.gradientEnd,
     ],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
   );
   
   static final _tabShadow = BoxShadow(
-    color: AppTheme.duaGradientStart.withValues(alpha: 0.3),
-    blurRadius: 10,
-    offset: const Offset(0, 4),
+    color: AppTheme.primaryGreen.withValues(alpha: 0.3),
+    blurRadius: 15,
+    offset: const Offset(0, 6),
   );
   
   static final _tabContainerShadow = BoxShadow(
@@ -242,23 +249,23 @@ class _DuaZikirPageState extends State<DuaZikirPage>
           children: [
             Icon(
               Icons.search_off,
-              size: 64,
+              size: 48,
               color: Colors.grey.shade400,
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 12),
             Text(
               'Sonuç bulunamadı',
               style: TextStyle(
-                fontSize: 18,
+                fontSize: 14,
                 color: Colors.grey.shade600,
                 fontWeight: FontWeight.w500,
               ),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 6),
             Text(
               'Farklı bir arama terimi deneyin',
               style: TextStyle(
-                fontSize: 14,
+                fontSize: 12,
                 color: Colors.grey.shade500,
               ),
             ),
@@ -267,24 +274,23 @@ class _DuaZikirPageState extends State<DuaZikirPage>
       );
     }
 
-    return ListView.builder(
-      physics: const AlwaysScrollableScrollPhysics(),
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-      itemCount: duas.length,
-      itemBuilder: (context, index) {
-        return _buildDuaCard(duas[index]);
-      },
-      // Performans optimizasyonları
-      addAutomaticKeepAlives: false,
-      addRepaintBoundaries: true,
+    // Tek ekrana sığacak kadar dua göster (maksimum 5-6 dua)
+    final displayDuas = duas.take(6).toList();
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: displayDuas.map((dua) => _buildDuaCard(dua)).toList(),
+      ),
     );
   }
 
   // Cache gradient for counter button
   static const _counterButtonGradient = LinearGradient(
     colors: [
-      AppTheme.duaGradientStart,
-      AppTheme.duaGradientEnd,
+      AppTheme.primaryGreen,
+      AppTheme.gradientEnd,
     ],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
@@ -292,44 +298,44 @@ class _DuaZikirPageState extends State<DuaZikirPage>
   
   static const _progressBarGradient = LinearGradient(
     colors: [
-      AppTheme.duaGradientStart,
-      AppTheme.duaGradientEnd,
+      AppTheme.primaryGreen,
+      AppTheme.gradientEnd,
     ],
   );
 
   // Cache text styles
   static const _headerTitleStyle = TextStyle(
-    fontSize: 28,
+    fontSize: 18,
     fontWeight: FontWeight.bold,
     color: Color(0xFF0F172A), // Colors.grey.shade900
   );
   
   static const _duaCardNameStyle = TextStyle(
-    fontSize: 20,
+    fontSize: 14,
     fontWeight: FontWeight.bold,
     color: Color(0xFF0F172A), // Colors.grey.shade900
   );
   
   static const _duaCardMeaningStyle = TextStyle(
-    fontSize: 14,
+    fontSize: 11,
     color: Color(0xFF64748B), // Colors.grey.shade600
   );
   
   static const _duaCardArabicStyle = TextStyle(
-    fontSize: 22,
+    fontSize: 14,
     fontWeight: FontWeight.w600,
     color: Color(0xFF0F172A), // Colors.grey.shade900
-    height: 1.8,
+    height: 1.5,
   );
   
   static const _duaCardCountStyle = TextStyle(
-    fontSize: 24,
+    fontSize: 16,
     fontWeight: FontWeight.bold,
     color: Color(0xFF0F172A), // Colors.grey.shade900
   );
   
   static const _headerSubtitleStyle = TextStyle(
-    fontSize: 14,
+    fontSize: 11,
     color: Color(0xFF64748B), // Colors.grey.shade600
   );
 
@@ -339,12 +345,12 @@ class _DuaZikirPageState extends State<DuaZikirPage>
 
     return RepaintBoundary(
       child: Padding(
-        padding: const EdgeInsets.only(bottom: 16),
+        padding: const EdgeInsets.only(bottom: 8),
         child: Card(
           elevation: 1,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           child: Padding(
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(12),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -363,11 +369,11 @@ class _DuaZikirPageState extends State<DuaZikirPage>
                           overflow: TextOverflow.ellipsis,
                         ),
                         if (dua.meaning != null) ...[
-                          const SizedBox(height: 8),
+                          const SizedBox(height: 4),
                           Text(
                             dua.meaning!,
                             style: _duaCardMeaningStyle,
-                            maxLines: 2,
+                            maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
                         ],
@@ -379,27 +385,31 @@ class _DuaZikirPageState extends State<DuaZikirPage>
                     icon: const Icon(
                       Icons.volume_up,
                       color: AppTheme.primaryGreen,
-                      size: 24,
+                      size: 20,
                     ),
                     tooltip: 'Ses oynat',
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(),
                   ),
                 ],
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 8),
               Container(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
                   color: Colors.grey.shade100,
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(10),
                 ),
                 child: Text(
                   dua.arabic,
                   style: _duaCardArabicStyle,
                   textAlign: TextAlign.right,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
               if (dua.targetCount > 0) ...[
-                const SizedBox(height: 20),
+                const SizedBox(height: 10),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -411,29 +421,31 @@ class _DuaZikirPageState extends State<DuaZikirPage>
                       children: [
                         IconButton(
                           onPressed: () => _resetCounter(dua.name),
-                          icon: Icon(Icons.refresh, color: Colors.grey.shade700),
+                          icon: Icon(Icons.refresh, color: Colors.grey.shade700, size: 18),
+                          padding: EdgeInsets.zero,
+                          constraints: const BoxConstraints(),
                         ),
-                        const SizedBox(width: 8),
+                        const SizedBox(width: 6),
                         GestureDetector(
                           onTap: () => _incrementCounter(dua.name),
                           child: Container(
-                            width: 70,
-                            height: 70,
+                            width: 40,
+                            height: 40,
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               gradient: _counterButtonGradient,
                               boxShadow: [
                                 BoxShadow(
-                                  color: AppTheme.duaGradientStart.withValues(alpha: 0.4),
-                                  blurRadius: 20,
-                                  offset: const Offset(0, 8),
+                                  color: AppTheme.primaryGreen.withValues(alpha: 0.4),
+                                  blurRadius: 10,
+                                  offset: const Offset(0, 4),
                                 ),
                               ],
                             ),
                             child: const Icon(
                               Icons.add,
                               color: Colors.white,
-                              size: 32,
+                              size: 20,
                             ),
                           ),
                         ),
@@ -441,7 +453,7 @@ class _DuaZikirPageState extends State<DuaZikirPage>
                     ),
                   ],
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 8),
                 Container(
                   height: 8,
                   decoration: BoxDecoration(

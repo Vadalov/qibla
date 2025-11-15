@@ -97,23 +97,30 @@ class _QiblaPageState extends State<QiblaPage> {
     return Scaffold(
       backgroundColor: Colors.grey.shade50,
       body: SafeArea(
-        child: RefreshIndicator(
-          onRefresh: _initQibla,
-          child: _isCalibrating
-              ? _buildCalibrating()
-              : _hasError
-                  ? _buildError()
-                  : CustomScrollView(
-                      physics: const AlwaysScrollableScrollPhysics(),
-                      slivers: [
-                        _buildHeader(),
-                        _buildCompass(),
-                        _buildInfo(),
-                        const SliverToBoxAdapter(child: SizedBox(height: 100)),
-                      ],
-                    ),
-        ),
+        child: _isCalibrating
+            ? _buildCalibrating()
+            : _hasError
+                ? _buildError()
+                : _buildContent(),
       ),
+    );
+  }
+
+  Widget _buildContent() {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        _buildHeader(),
+        Expanded(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              _buildCompass(),
+              _buildInfo(),
+            ],
+          ),
+        ),
+      ],
     );
   }
 
@@ -137,11 +144,14 @@ class _QiblaPageState extends State<QiblaPage> {
               style: _errorTitleStyle,
             ),
             const SizedBox(height: 24),
-            ElevatedButton(
+              ElevatedButton(
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppTheme.primaryGreen,
                 foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
               ),
               onPressed: _initQibla,
               child: const Text('Tekrar Dene'),
@@ -176,22 +186,36 @@ class _QiblaPageState extends State<QiblaPage> {
   }
 
   Widget _buildHeader() {
-    return SliverToBoxAdapter(
-      child: Padding(
-        padding: const EdgeInsets.all(24.0),
-        child: Column(
-          children: [
-            const Text(
-              'Kıble Yönü',
-              style: _headerTitleStyle,
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: Row(
+        children: [
+          Icon(
+            Icons.explore,
+            size: 32,
+            color: AppTheme.primaryGreen,
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text(
+                  'Kıble Yönü',
+                  style: _headerTitleStyle,
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  _locationLabel,
+                  style: _headerLocationStyle,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
             ),
-            const SizedBox(height: 8),
-            Text(
-              _locationLabel,
-              style: _headerLocationStyle,
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -199,50 +223,50 @@ class _QiblaPageState extends State<QiblaPage> {
   // Cache static decorations to avoid recreation
   static final _compassGradient = RadialGradient(
     colors: [
-      AppTheme.qiblaGradientStart.withValues(alpha: 0.15),
-      AppTheme.qiblaGradientEnd.withValues(alpha: 0.05),
+      AppTheme.primaryGreen.withValues(alpha: 0.15),
+      AppTheme.gradientEnd.withValues(alpha: 0.05),
     ],
   );
   
   static const _arrowGradient = RadialGradient(
     colors: [
-      AppTheme.qiblaGradientStart,
-      AppTheme.qiblaGradientEnd,
+      AppTheme.primaryGreen,
+      AppTheme.gradientEnd,
     ],
   );
 
   // Cache text styles
   static const _headerTitleStyle = TextStyle(
-    fontSize: 28,
+    fontSize: 20,
     fontWeight: FontWeight.bold,
     color: Color(0xFF0F172A), // Colors.grey.shade900
   );
   
   static const _headerLocationStyle = TextStyle(
-    fontSize: 16,
+    fontSize: 12,
     color: Color(0xFF64748B), // Colors.grey.shade600
   );
   
   static const _compassBearingStyle = TextStyle(
-    fontSize: 48,
+    fontSize: 32,
     fontWeight: FontWeight.bold,
-    color: Color(0xFFF59E0B), // AppTheme.qiblaGradientStart
+    color: AppTheme.primaryGreen,
   );
   
   static const _compassLabelStyle = TextStyle(
-    fontSize: 14,
+    fontSize: 12,
     color: Color(0xFF64748B), // Colors.grey.shade600
     fontWeight: FontWeight.w500,
   );
   
   static const _infoLabelStyle = TextStyle(
-    fontSize: 14,
+    fontSize: 11,
     color: Color(0xFF64748B), // Colors.grey.shade600
     fontWeight: FontWeight.w500,
   );
   
   static const _infoValueStyle = TextStyle(
-    fontSize: 20,
+    fontSize: 16,
     fontWeight: FontWeight.bold,
     color: Color(0xFF0F172A), // Colors.grey.shade900
   );
@@ -264,114 +288,110 @@ class _QiblaPageState extends State<QiblaPage> {
   );
 
   Widget _buildCompass() {
-    return SliverToBoxAdapter(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-        child: Card(
-          elevation: 2,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-          child: Padding(
-            padding: const EdgeInsets.all(32),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                RepaintBoundary(
-                  child: Transform.rotate(
-                    angle: -_direction * math.pi / 180,
-                    child: Container(
-                      width: 250,
-                      height: 250,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        gradient: _compassGradient,
-                        border: Border.all(
-                          color: AppTheme.qiblaGradientStart,
-                          width: 3,
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: AppTheme.qiblaGradientStart.withValues(alpha: 0.2),
-                            blurRadius: 20,
-                            spreadRadius: 2,
-                          ),
-                        ],
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: Card(
+        elevation: 2,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              RepaintBoundary(
+                child: Transform.rotate(
+                  angle: -_direction * math.pi / 180,
+                  child: Container(
+                    width: 160,
+                    height: 160,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      gradient: _compassGradient,
+                      border: Border.all(
+                        color: AppTheme.primaryGreen,
+                        width: 2,
                       ),
-                      child: Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          // Compass circle
-                          Container(
-                            width: 200,
-                            height: 200,
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppTheme.primaryGreen.withValues(alpha: 0.2),
+                          blurRadius: 12,
+                          spreadRadius: 1,
+                        ),
+                      ],
+                    ),
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        // Compass circle
+                        Container(
+                          width: 130,
+                          height: 130,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: Colors.grey.shade300,
+                              width: 1.5,
+                            ),
+                          ),
+                        ),
+                        // North indicator
+                        Positioned(
+                          top: 12,
+                          child: Text(
+                            'N',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.grey.shade900,
+                            ),
+                          ),
+                        ),
+                        // Kıble direction arrow
+                        Transform.rotate(
+                          angle: _direction * math.pi / 180,
+                          child: Container(
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              border: Border.all(
-                                color: Colors.grey.shade300,
-                                width: 2,
-                              ),
+                              gradient: _arrowGradient,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: AppTheme.primaryGreen.withValues(alpha: 0.4),
+                                  blurRadius: 10,
+                                  spreadRadius: 1,
+                                ),
+                              ],
+                            ),
+                            padding: const EdgeInsets.all(8),
+                            child: const Icon(
+                              Icons.navigation,
+                              size: 36,
+                              color: Colors.white,
                             ),
                           ),
-                          // North indicator
-                          Positioned(
-                            top: 20,
-                            child: Text(
-                              'N',
-                              style: TextStyle(
-                                fontSize: 24,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.grey.shade900,
-                              ),
-                            ),
-                          ),
-                          // Kıble direction arrow
-                          Transform.rotate(
-                            angle: _direction * math.pi / 180,
-                            child: Container(
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                gradient: _arrowGradient,
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: AppTheme.qiblaGradientStart.withValues(alpha: 0.4),
-                                    blurRadius: 15,
-                                    spreadRadius: 2,
-                                  ),
-                                ],
-                              ),
-                              padding: const EdgeInsets.all(12),
-                              child: const Icon(
-                                Icons.navigation,
-                                size: 56,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
-                const SizedBox(height: 24),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                  decoration: BoxDecoration(
-                    color: AppTheme.qiblaGradientStart.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: Text(
-                    '${_qiblaBearing.toStringAsFixed(1)}°',
-                    style: _compassBearingStyle.copyWith(
-                      color: AppTheme.qiblaGradientStart,
-                    ),
-                  ),
+              ),
+              const SizedBox(height: 12),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                decoration: BoxDecoration(
+                  color: AppTheme.primaryGreen.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(12),
                 ),
-                const SizedBox(height: 8),
-                const Text(
-                  'Kıble Açısı',
-                  style: _compassLabelStyle,
+                child: Text(
+                  '${_qiblaBearing.toStringAsFixed(1)}°',
+                  style: _compassBearingStyle,
                 ),
-              ],
-            ),
+              ),
+              const SizedBox(height: 6),
+              const Text(
+                'Kıble Açısı',
+                style: _compassLabelStyle,
+              ),
+            ],
           ),
         ),
       ),
@@ -379,43 +399,44 @@ class _QiblaPageState extends State<QiblaPage> {
   }
 
   Widget _buildInfo() {
-    return SliverToBoxAdapter(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-        child: Card(
-          elevation: 1,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-          child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
-              gradient: LinearGradient(
-                colors: [
-                  AppTheme.qiblaGradientStart.withValues(alpha: 0.05),
-                  AppTheme.qiblaGradientEnd.withValues(alpha: 0.02),
-                ],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: Card(
+        elevation: 1,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            gradient: LinearGradient(
+              colors: [
+                AppTheme.primaryGreen.withValues(alpha: 0.05),
+                AppTheme.gradientEnd.withValues(alpha: 0.02),
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
             ),
-            child: Padding(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Row(
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(12),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Expanded(
+                  child: Row(
                     children: [
                       Container(
-                        padding: const EdgeInsets.all(8),
+                        padding: const EdgeInsets.all(6),
                         decoration: BoxDecoration(
-                          color: AppTheme.qiblaGradientStart.withValues(alpha: 0.15),
-                          borderRadius: BorderRadius.circular(10),
+                          color: AppTheme.primaryGreen.withValues(alpha: 0.15),
+                          borderRadius: BorderRadius.circular(8),
                         ),
-                        child: const Icon(Icons.location_on, color: AppTheme.qiblaGradientStart, size: 24),
+                        child: const Icon(Icons.location_on, color: AppTheme.primaryGreen, size: 18),
                       ),
-                      const SizedBox(width: 12),
+                      const SizedBox(width: 10),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
                           children: [
                             const Text(
                               'Mesafe',
@@ -430,28 +451,32 @@ class _QiblaPageState extends State<QiblaPage> {
                       ),
                     ],
                   ),
-                  Divider(color: Colors.grey.shade300, height: 32),
-                  Row(
+                ),
+                Container(width: 1, height: 40, color: Colors.grey.shade300),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Row(
                     children: [
                       Container(
-                        padding: const EdgeInsets.all(8),
+                        padding: const EdgeInsets.all(6),
                         decoration: BoxDecoration(
-                          color: AppTheme.qiblaGradientEnd.withValues(alpha: 0.15),
-                          borderRadius: BorderRadius.circular(10),
+                          color: AppTheme.primaryGreen.withValues(alpha: 0.15),
+                          borderRadius: BorderRadius.circular(8),
                         ),
-                        child: const Icon(Icons.mosque, color: AppTheme.qiblaGradientEnd, size: 24),
+                        child: const Icon(Icons.mosque, color: AppTheme.primaryGreen, size: 18),
                       ),
-                      const SizedBox(width: 12),
+                      const SizedBox(width: 10),
                       const Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
                           children: [
                             Text(
                               'Hedef',
                               style: _infoLabelStyle,
                             ),
                             Text(
-                              'Kabe, Mekke',
+                              'Kabe',
                               style: _infoValueStyle,
                             ),
                           ],
@@ -459,8 +484,8 @@ class _QiblaPageState extends State<QiblaPage> {
                       ),
                     ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),

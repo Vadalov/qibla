@@ -188,45 +188,14 @@ class _QuranPageState extends State<QuranPage> {
     return Scaffold(
       backgroundColor: Colors.grey.shade50,
       body: SafeArea(
-        child: RefreshIndicator(
-          onRefresh: _loadLastRead,
-          child: CustomScrollView(
-            physics: const AlwaysScrollableScrollPhysics(),
-            slivers: [
-              _buildHeader(),
-              _buildSearchBar(),
-              _buildLastRead(),
-              _buildSurahList(),
-              const SliverToBoxAdapter(child: SizedBox(height: 100)),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildHeader() {
-    return SliverToBoxAdapter(
-      child: Padding(
-        padding: const EdgeInsets.all(24.0),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(
-              Icons.menu_book,
-              size: 48,
-              color: AppTheme.primaryGreen,
-            ),
-            const SizedBox(height: 12),
-            const Text(
-              'Kur\'an-ı Kerim',
-              style: _headerTitleStyle,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              _searchQuery.isEmpty 
-                  ? '114 Sure'
-                  : '${_filteredSurahs.length} Sure Bulundu',
-              style: _headerSubtitleStyle,
+            _buildHeader(),
+            _buildSearchBar(),
+            _buildLastRead(),
+            Expanded(
+              child: _buildSurahList(),
             ),
           ],
         ),
@@ -234,29 +203,61 @@ class _QuranPageState extends State<QuranPage> {
     );
   }
 
-  Widget _buildSearchBar() {
-    return SliverToBoxAdapter(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-        child: Card(
-          elevation: 1,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-          child: TextField(
-            controller: _searchController,
-            decoration: InputDecoration(
-              hintText: 'Sure ara...',
-              prefixIcon: const Icon(Icons.search, color: AppTheme.primaryGreen),
-              suffixIcon: _searchQuery.isNotEmpty
-                  ? IconButton(
-                      icon: const Icon(Icons.clear),
-                      onPressed: () {
-                        _searchController.clear();
-                      },
-                    )
-                  : null,
-              border: InputBorder.none,
-              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+  Widget _buildHeader() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: Row(
+        children: [
+          const Icon(
+            Icons.menu_book,
+            size: 32,
+            color: AppTheme.primaryGreen,
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text(
+                  'Kur\'an-ı Kerim',
+                  style: _headerTitleStyle,
+                ),
+                Text(
+                  _searchQuery.isEmpty 
+                      ? '114 Sure'
+                      : '${_filteredSurahs.length} Sure Bulundu',
+                  style: _headerSubtitleStyle,
+                ),
+              ],
             ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSearchBar() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+      child: Card(
+        elevation: 1,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        child: TextField(
+          controller: _searchController,
+          decoration: InputDecoration(
+            hintText: 'Sure ara...',
+            prefixIcon: const Icon(Icons.search, color: AppTheme.primaryGreen, size: 22),
+            suffixIcon: _searchQuery.isNotEmpty
+                ? IconButton(
+                    icon: const Icon(Icons.clear, size: 20),
+                    onPressed: () {
+                      _searchController.clear();
+                    },
+                  )
+                : null,
+            border: InputBorder.none,
+            contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
           ),
         ),
       ),
@@ -266,131 +267,134 @@ class _QuranPageState extends State<QuranPage> {
   // Cache gradient and decoration to avoid recreation
   static const _lastReadGradient = LinearGradient(
     colors: [
-      AppTheme.quranGradientStart,
-      AppTheme.quranGradientEnd,
+      AppTheme.primaryGreen,
+      AppTheme.gradientEnd,
     ],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
   
   static final _lastReadShadow = BoxShadow(
-    color: AppTheme.quranGradientStart.withValues(alpha: 0.3),
+    color: AppTheme.primaryGreen.withValues(alpha: 0.3),
     blurRadius: 20,
     offset: const Offset(0, 8),
   );
 
   // Cache text styles
   static const _lastReadTitleStyle = TextStyle(
-    fontSize: 18,
+    fontSize: 12,
     fontWeight: FontWeight.w600,
     color: Colors.white,
   );
   
   static const _lastReadSurahStyle = TextStyle(
-    fontSize: 24,
+    fontSize: 16,
     fontWeight: FontWeight.bold,
     color: Colors.white,
   );
   
   static const _lastReadAyahStyle = TextStyle(
-    fontSize: 14,
+    fontSize: 11,
     color: Color(0xFFE5E7EB), // Colors.white.withValues(alpha: 0.9)
   );
   
   static const _surahCardNameStyle = TextStyle(
-    fontSize: 18,
+    fontSize: 12,
     fontWeight: FontWeight.w600,
     color: Color(0xFF0F172A), // Colors.grey.shade900
   );
   
   static const _surahCardInfoStyle = TextStyle(
-    fontSize: 14,
+    fontSize: 9,
     color: Color(0xFF64748B), // Colors.grey.shade600
   );
   
   static const _surahCardArabicStyle = TextStyle(
-    fontSize: 22,
+    fontSize: 14,
     fontWeight: FontWeight.w600,
     color: Color(0xFF0F172A), // Colors.grey.shade900
   );
   
   static const _headerTitleStyle = TextStyle(
-    fontSize: 28,
+    fontSize: 18,
     fontWeight: FontWeight.bold,
     color: Color(0xFF0F172A), // Colors.grey.shade900
   );
   
   static const _headerSubtitleStyle = TextStyle(
-    fontSize: 16,
+    fontSize: 11,
     color: Color(0xFF64748B), // Colors.grey.shade600
   );
 
   Widget _buildLastRead() {
-    return SliverToBoxAdapter(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-        child: GestureDetector(
-          onTap: _isLastReadLoading
-              ? null
-              : () {
-                  final surah = _surahs.firstWhere(
-                    (s) => s.number == _lastSurahNumber,
-                    orElse: () => _surahs.first,
-                  );
-                  if (mounted) {
-                    _openSurah(surah);
-                  }
-                },
-          child: Card(
-            elevation: 3,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16),
-                gradient: _lastReadGradient,
-                boxShadow: [_lastReadShadow],
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
+    if (_lastSurahNumber == 0) return const SizedBox.shrink();
+    
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+      child: GestureDetector(
+        onTap: _isLastReadLoading
+            ? null
+            : () {
+                final surah = _surahs.firstWhere(
+                  (s) => s.number == _lastSurahNumber,
+                  orElse: () => _surahs.first,
+                );
+                if (mounted) {
+                  _openSurah(surah);
+                }
+              },
+        child: Card(
+          elevation: 2,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              gradient: _lastReadGradient,
+              boxShadow: [_lastReadShadow],
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(12),
+              child: Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(6),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.2),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: const Icon(Icons.bookmark, color: Colors.white, size: 18),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
                       children: [
-                        Container(
-                          padding: const EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            color: Colors.white.withValues(alpha: 0.2),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: const Icon(Icons.bookmark, color: Colors.white, size: 24),
-                        ),
-                        const SizedBox(width: 12),
                         const Text(
                           'Son Okunan',
                           style: _lastReadTitleStyle,
                         ),
+                        if (_isLastReadLoading)
+                          const Text(
+                            'Yükleniyor...',
+                            style: _lastReadAyahStyle,
+                          )
+                        else ...[
+                          Text(
+                            _lastSurahName,
+                            style: _lastReadSurahStyle,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          Text(
+                            'Ayet $_lastAyahNumber',
+                            style: _lastReadAyahStyle,
+                          ),
+                        ],
                       ],
                     ),
-                    const SizedBox(height: 16),
-                    if (_isLastReadLoading)
-                      const Text(
-                        'Yükleniyor...',
-                        style: _lastReadAyahStyle,
-                      )
-                    else ...[
-                      Text(
-                        _lastSurahName,
-                        style: _lastReadSurahStyle,
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        'Ayet $_lastAyahNumber',
-                        style: _lastReadAyahStyle,
-                      ),
-                    ],
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ),
@@ -401,123 +405,116 @@ class _QuranPageState extends State<QuranPage> {
 
   Widget _buildSurahList() {
     if (_filteredSurahs.isEmpty) {
-      return SliverFillRemaining(
-        hasScrollBody: false,
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                Icons.search_off,
-                size: 64,
-                color: Colors.grey.shade400,
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.search_off,
+              size: 48,
+              color: Colors.grey.shade400,
+            ),
+            const SizedBox(height: 12),
+            Text(
+              'Sonuç bulunamadı',
+              style: TextStyle(
+                fontSize: 14,
+                color: Colors.grey.shade600,
+                fontWeight: FontWeight.w500,
               ),
-              const SizedBox(height: 16),
-              Text(
-                'Sonuç bulunamadı',
-                style: TextStyle(
-                  fontSize: 18,
-                  color: Colors.grey.shade600,
-                  fontWeight: FontWeight.w500,
-                ),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              'Farklı bir arama terimi deneyin',
+              style: TextStyle(
+                fontSize: 12,
+                color: Colors.grey.shade500,
               ),
-              const SizedBox(height: 8),
-              Text(
-                'Farklı bir arama terimi deneyin',
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.grey.shade500,
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       );
     }
 
-    return SliverPadding(
-      padding: const EdgeInsets.symmetric(horizontal: 24),
-      sliver: SliverFixedExtentList(
-        itemExtent: 84.0, // 12 (bottom padding) + 72 (card height)
-        delegate: SliverChildBuilderDelegate(
-          (context, index) {
-            return _buildSurahCard(_filteredSurahs[index]);
-          },
-          childCount: _filteredSurahs.length,
-          addAutomaticKeepAlives: false,
-          addRepaintBoundaries: true,
+    // Tek ekrana sığacak kadar sure göster (maksimum 20-25 sure)
+    final displaySurahs = _filteredSurahs.take(20).toList();
+    
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: GridView.builder(
+        physics: const NeverScrollableScrollPhysics(),
+        shrinkWrap: true,
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 3,
+          childAspectRatio: 1.1,
+          crossAxisSpacing: 8,
+          mainAxisSpacing: 8,
         ),
+        itemCount: displaySurahs.length,
+        itemBuilder: (context, index) {
+          return _buildSurahCard(displaySurahs[index]);
+        },
       ),
     );
   }
 
   Widget _buildSurahCard(Surah surah) {
     return RepaintBoundary(
-      child: Padding(
-        padding: const EdgeInsets.only(bottom: 12),
-        child: SizedBox(
-          height: 72, // Sabit yükseklik
-          child: Card(
-            elevation: 1,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-            child: InkWell(
-              onTap: () => _openSurah(surah),
-              borderRadius: BorderRadius.circular(12),
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Row(
-                  children: [
-                    Container(
-                      width: 50,
-                      height: 50,
-                      decoration: BoxDecoration(
-                        color: AppTheme.primaryGreen,
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Center(
-                        child: Text(
-                          '${surah.number}',
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
+      child: Card(
+        elevation: 1,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        child: InkWell(
+          onTap: () => _openSurah(surah),
+          borderRadius: BorderRadius.circular(10),
+          child: Padding(
+            padding: const EdgeInsets.all(10),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 32,
+                  height: 32,
+                  decoration: BoxDecoration(
+                    color: AppTheme.primaryGreen,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Center(
+                    child: Text(
+                      '${surah.number}',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            surah.name,
-                            style: _surahCardNameStyle,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            '${surah.verses} Ayet • ${surah.revelation}',
-                            style: _surahCardInfoStyle,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Text(
-                      surah.arabic,
-                      style: _surahCardArabicStyle,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ],
+                  ),
                 ),
-              ),
+                const SizedBox(height: 8),
+                Text(
+                  surah.name,
+                  style: _surahCardNameStyle,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  surah.arabic,
+                  style: _surahCardArabicStyle,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  '${surah.verses} Ayet',
+                  style: _surahCardInfoStyle,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.center,
+                ),
+              ],
             ),
           ),
         ),

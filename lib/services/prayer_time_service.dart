@@ -36,6 +36,12 @@ class PrayerTimeService {
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         final timings = data['data']['timings'] as Map<String, dynamic>;
+        
+        // Extract Hijri date
+        final hijriData = data['data']['date']['hijri'] as Map<String, dynamic>?;
+        final hijriDay = hijriData?['day'] as String? ?? '1';
+        final hijriMonth = hijriData?['month']['en'] as String? ?? 'Muharram';
+        final hijriYear = hijriData?['year'] as String? ?? '1445';
 
         final prayerTimes = PrayerTimes(
           fajr: _formatTime(timings['Fajr'] ?? '05:00'),
@@ -44,8 +50,15 @@ class PrayerTimeService {
           asr: _formatTime(timings['Asr'] ?? '15:00'),
           maghrib: _formatTime(timings['Maghrib'] ?? '18:00'),
           isha: _formatTime(timings['Isha'] ?? '20:00'),
+          suhoor: _formatTime(timings['Imsak'] ?? '04:30'),
+          iftaar: _formatTime(timings['Maghrib'] ?? '18:00'),
+          sunset: _formatTime(timings['Sunset'] ?? '18:00'),
+          midday: _formatTime(timings['Midday'] ?? '12:00'),
           location: locationName ?? 'Unknown',
           date: DateTime(targetYear, targetMonth, targetDay),
+          hijriDay: hijriDay,
+          hijriMonth: hijriMonth,
+          hijriYear: hijriYear,
         );
 
         // Save to storage
@@ -179,8 +192,15 @@ class PrayerTimeService {
         asr: times['asr'] ?? '15:45',
         maghrib: times['maghrib'] ?? '17:30',
         isha: times['isha'] ?? '19:00',
+        suhoor: times['suhoor'] ?? '04:15',
+        iftaar: times['maghrib'] ?? '17:30',
+        sunset: '17:30',
+        midday: '12:00',
         location: location,
         date: DateTime.now(),
+        hijriDay: '1',
+        hijriMonth: 'Muharram',
+        hijriYear: '1445',
       );
     } catch (e) {
       return null;
@@ -216,8 +236,15 @@ class PrayerTimes {
   final String asr;
   final String maghrib;
   final String isha;
+  final String suhoor; // Imsak - Sahur vakti
+  final String iftaar; // Maghrib - İftar vakti (Maghrib ile aynı)
+  final String sunset; // Güneş batışı
+  final String midday; // Gün ortası
   final String location;
   final DateTime date;
+  final String hijriDay;
+  final String hijriMonth;
+  final String hijriYear;
 
   PrayerTimes({
     required this.fajr,
@@ -226,8 +253,15 @@ class PrayerTimes {
     required this.asr,
     required this.maghrib,
     required this.isha,
+    required this.suhoor,
+    required this.iftaar,
+    required this.sunset,
+    required this.midday,
     required this.location,
     required this.date,
+    this.hijriDay = '1',
+    this.hijriMonth = 'Muharram',
+    this.hijriYear = '1445',
   });
 }
 
