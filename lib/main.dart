@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'pages/times_page.dart';
-import 'pages/qibla_page.dart';
-import 'pages/quran_page.dart';
-import 'pages/dua_zikir_page.dart';
+import 'pages/home_glass_page.dart';
+import 'pages/qibla_compass_page.dart';
+import 'pages/dua_page.dart';
+import 'pages/zikir_page.dart';
+import 'pages/settings_page.dart';
 import 'theme/app_theme.dart';
 
 void main() {
@@ -26,7 +27,7 @@ class IslamiApp extends StatelessWidget {
       title: 'İslami Mobil Uygulama',
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
-      themeMode: ThemeMode.light,
+      themeMode: ThemeMode.dark,
       home: const HomeScreen(),
       debugShowCheckedModeBanner: false,
     );
@@ -43,17 +44,19 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
   final List<Widget> _pages = const [
-    TimesPage(),
-    QiblaPage(),
-    QuranPage(),
-    DuaZikirPage(),
+    HomeGlassPage(),
+    QiblaCompassPage(),
+    DuaPage(),
+    ZikirPage(),
+    SettingsPage(),
   ];
 
   static const _navColors = [
     AppTheme.prayerGradientStart,
     AppTheme.qiblaGradientStart,
-    AppTheme.quranGradientStart,
     AppTheme.duaGradientStart,
+    AppTheme.roseGold,
+    AppTheme.twilightPurple,
   ];
 
   Widget _buildNavItem(int index, IconData icon, String label) {
@@ -69,23 +72,27 @@ class _HomeScreenState extends State<HomeScreen> {
         },
         behavior: HitTestBehavior.opaque,
         child: Container(
-          constraints: const BoxConstraints(minWidth: 60, minHeight: 48),
+          constraints: const BoxConstraints(minWidth: 60, minHeight: 52),
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
           decoration: BoxDecoration(
-            color: isSelected 
-                ? color.withValues(alpha: 0.12)
-                : Colors.transparent,
+            color: isSelected ? Colors.white.withOpacity(0.08) : Colors.transparent,
             borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: isSelected ? Colors.white.withOpacity(0.14) : Colors.transparent,
+            ),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(
-                icon,
-                color: isSelected ? color : Colors.grey.shade600,
-                size: 24,
-              ),
+              if (index == 1)
+                _buildQiblaGem(isSelected, color)
+              else
+                Icon(
+                  icon,
+                  color: isSelected ? color : Colors.white60,
+                  size: 24,
+                ),
               if (isSelected) ...[
                 const SizedBox(width: 8),
                 Text(
@@ -93,7 +100,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   style: TextStyle(
                     color: color,
                     fontSize: 13,
-                    fontWeight: FontWeight.w600,
+                    fontWeight: FontWeight.w700,
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -106,6 +113,33 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  Widget _buildQiblaGem(bool isSelected, Color color) {
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 260),
+      height: 30,
+      width: 30,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        gradient: LinearGradient(
+          colors: [
+            isSelected ? color : color.withOpacity(0.6),
+            AppTheme.secondaryGold,
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: AppTheme.secondaryGold.withOpacity(0.4),
+            blurRadius: isSelected ? 16 : 8,
+            offset: const Offset(0, 6),
+          ),
+        ],
+      ),
+      child: const Icon(Icons.explore, color: Colors.white, size: 18),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -113,13 +147,17 @@ class _HomeScreenState extends State<HomeScreen> {
       body: IndexedStack(index: _currentIndex, children: _pages),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
-          color: Colors.white,
+          gradient: const LinearGradient(
+            colors: [Color(0xCC0F172A), Color(0xCC0B1222)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
           borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.08),
-              blurRadius: 30,
-              offset: const Offset(0, -10),
+              color: Colors.black.withOpacity(0.35),
+              blurRadius: 40,
+              offset: const Offset(0, -12),
             ),
           ],
         ),
@@ -129,10 +167,11 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                _buildNavItem(0, Icons.access_time_rounded, 'Vakitler'),
+                _buildNavItem(0, Icons.home_rounded, 'Home'),
                 _buildNavItem(1, Icons.explore_outlined, 'Kıble'),
-                _buildNavItem(2, Icons.menu_book_rounded, 'Kur\'an'),
-                _buildNavItem(3, Icons.auto_awesome_outlined, 'Dua'),
+                _buildNavItem(2, Icons.auto_awesome_outlined, 'Dua'),
+                _buildNavItem(3, Icons.brightness_low_rounded, 'Zikir'),
+                _buildNavItem(4, Icons.settings_outlined, 'Ayarlar'),
               ],
             ),
           ),
